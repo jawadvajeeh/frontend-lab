@@ -1,3 +1,4 @@
+import { Text } from "@/components/ui/text";
 import { useTaskContext } from "./context";
 import { MemoizedTaskListItem } from "./task-item";
 
@@ -12,7 +13,9 @@ function TaskList() {
     <>
       {tasks.length === 0 ? (
         <div className="space-y-4">
-          <span className="text-fs-xs">No Tasks</span>
+          <Text as="span" className="text-fs-xs">
+            No Tasks.
+          </Text>
         </div>
       ) : (
         <div className="space-y-4">
