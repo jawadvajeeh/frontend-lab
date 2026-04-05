@@ -5,13 +5,22 @@ import { taskReducer } from "./reducer";
 import { TaskDispatchContext, TasksContext } from "./context";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { initialTasks } from "./mock-data";
+import type { TaskItem } from "./types";
+
+function reviveTask(task: TaskItem): TaskItem {
+  return {
+    ...task,
+    createdAt: new Date(task.createdAt),
+    updatedAt: new Date(task.updatedAt),
+  };
+}
 
 function TaskManager() {
   const { get, set } = useLocalStorage("tasks", initialTasks);
   // state
   const [tasks, dispatch] = useReducer(taskReducer, [], () => {
     try {
-      const stored = get();
+      const stored = get().map(reviveTask);
       return stored;
     } catch {
       return [];
