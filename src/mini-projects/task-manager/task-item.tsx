@@ -1,6 +1,7 @@
 import type { TaskItem } from "./types";
 import { useTaskDispatchContext } from "./context";
 import React from "react";
+import { Button } from "@/components/ui/button";
 
 type TaskItemProps = {
   taskItem: TaskItem;
@@ -44,18 +45,19 @@ function TaskListItem({ taskItem }: TaskItemProps) {
         <span className="text-fs-xs font-semibold bg-secondary px-2 py-1 rounded-lg">
           {taskItem.priority}
         </span>
-        <div className="flex gap-2 text-fs-xs ml-auto font-semibold">
-          <button className="bg-accent px-2 py-1 rounded-md text-accent-foreground">
+        <div className="flex text-fs-xs ml-auto font-semibold">
+          <Button variant={`ghost`} className="text-fs-xs">
             Edit
-          </button>
-          <button
+          </Button>
+          <Button
+            variant={`ghost`}
+            className="text-fs-xs text-destructive"
             onClick={() =>
               dispatch({ type: "deleted", payload: { taskId: taskItem.id } })
             }
-            className="bg-destructive px-2 py-1 rounded-md text-destructive-foreground"
           >
             Delete
-          </button>
+          </Button>
         </div>
       </div>
     </div>

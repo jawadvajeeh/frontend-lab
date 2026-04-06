@@ -1,6 +1,7 @@
 import { useId, useState } from "react";
 import type { Task, TaskPriority } from "./types";
 import { useTaskDispatchContext } from "./context";
+import { Button } from "@/components/ui/button";
 
 function TaskInput() {
   // accessibility ids
@@ -80,9 +81,7 @@ function TaskInput() {
             </select>
           </div>
         </div>
-        <button className="bg-primary text-primary-foreground p-2 text-fs-sm">
-          Create task
-        </button>
+        <Button className="text-fs-xs">Create Task</Button>
       </form>
     </div>
   );

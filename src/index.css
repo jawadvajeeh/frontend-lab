@@ -1,4 +1,7 @@
 @import "tailwindcss";
+@import "./components/ui/styles.css";
+
+@custom-variant hover (&:hover);
 
 :root {
     /* fluid base (scales with viewport) */
