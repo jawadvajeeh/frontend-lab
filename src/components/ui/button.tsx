@@ -31,7 +31,10 @@ const Button = <Tag extends keyof JSX.IntrinsicElements = "button">({
   VariantProps<typeof buttonVariants> & { as?: Tag }) => {
   const { as: Comp = "button" } = props;
   return (
-    <Comp className={cn(buttonVariants({ variant, size, className }))}>
+    <Comp
+      className={cn(buttonVariants({ variant, size, className }))}
+      {...(props as any)}
+    >
       {children}
     </Comp>
   );

@@ -17,3 +17,11 @@
 .cn-button-size-sm {
     @apply h-8 gap-1 px-3;
 }
+
+.cn-badge-variant-default {
+    @apply border-2 text-muted-foreground border-muted;
+}
+
+.cn-badge-variant-ghost {
+    @apply px-2 text-muted-foreground;
+}
