@@ -1,8 +1,11 @@
+import { Link } from "react-router";
+
 function App() {
   return (
     <main className="min-h-screen w-full p-4">
       <div className="space-y-4">
         <h1 className="font-semibold text-fs-xl">Design System</h1>
+        <Link to="/dashboard">Dashboard</Link>
         <div className="space-y-2">
           <div className="border-b">
             <h2 className="text-fs-lg font-semibold text-secondary-foreground">

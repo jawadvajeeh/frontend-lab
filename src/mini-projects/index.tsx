@@ -3,6 +3,7 @@ import { Outlet } from "react-router";
 import { Page } from "../components/layout/page";
 import { useNavigate } from "react-router";
 import { useLocation } from "react-router";
+import { Text } from "@/components/ui/text";
 
 function MiniProjectsDashboard() {
   const navigate = useNavigate();
@@ -19,9 +20,11 @@ function MiniProjectsDashboard() {
           </button>
         )}
       </div>
-      <h1 className="text-fs-xl font-semibold text-primary">Mini projects</h1>
+      <Text as="h1" className="text-fs-lg font-semibold text-primary">
+        Mini projects
+      </Text>
       <div>
-        <ul>
+        <ul className="flex gap-2 text-fs-sm">
           <li>
             <NavLink
               to="task-manager"
@@ -30,6 +33,16 @@ function MiniProjectsDashboard() {
               }
             >
               Task Manager
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="multi-step-form"
+              className={({ isActive }) =>
+                ` ${isActive && "font-bold underline"}`
+              }
+            >
+              Form Wizard
             </NavLink>
           </li>
         </ul>
