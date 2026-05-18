@@ -1,95 +1,161 @@
-import { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 type Product = {
   id: number;
   name: string;
+  category: string;
   price: number;
+  rating: number;
 };
 
-type TransformedProduct = Product & {
-  computed: number;
-};
-
-const items: Product[] = Array.from({ length: 5000 }, (_, i) => ({
-  id: i,
-  name: `Product ${i}`,
-  price: Math.random() * 100,
+const hugeDataset: Product[] = Array.from({ length: 5000 }, (_, i) => ({
+  id: i + 1,
+  name: `Product ${i + 1}`,
+  category: ["Books", "Electronics", "Clothing", "Home"][i % 4],
+  price: Math.round(Math.random() * 1000),
+  rating: Math.round(Math.random() * 5),
 }));
 
-function expensiveTransform(product: Product): TransformedProduct {
-  let total = 0;
+function expensiveFilter(product: Product, query: string) {
+  // Artificial CPU work to make lag obvious
+  let score = 0;
 
-  for (let i = 0; i < 10000; i++) {
-    total += Math.sqrt(product.price * i);
-  }
-
-  return {
-    ...product,
-    computed: total,
-  };
-}
-
-function yieldToBrowser() {
-  return new Promise<void>((resolve) => {
-    setTimeout(resolve, 0);
-  });
-}
-
-export default function ProductPage() {
-  const [products, setProducts] = useState<TransformedProduct[]>([]);
-  const [status, setStatus] = useState("Idle");
-
-  async function handleLoadProducts() {
-    setStatus("Loading...");
-    // Let React commit + browser paint "Loading..." first
-    await afterNextPaint();
-
-    const transformed: TransformedProduct[] = [];
-    const chunkSize = 100;
-
-    for (let i = 0; i < items.length; i += chunkSize) {
-      const chunk = items.slice(i, i + chunkSize);
-
-      for (const item of chunk) {
-        transformed.push(expensiveTransform(item));
-      }
-
-      setStatus(
-        `Processing ${Math.min(i + chunkSize, items.length)} / ${items.length}`,
-      );
-      await afterNextPaint();
-
-      // Yield to browser so it can paint and handle input
-      await yieldToBrowser();
-    }
-
-    setProducts(transformed);
-    setStatus("Done");
+  for (let i = 0; i < 5000; i++) {
+    score += Math.sqrt(i + product.price);
   }
 
   return (
-    <div>
-      <button onClick={handleLoadProducts}>Load Products!</button>
-
-      <p>{status}</p>
-
-      <ul>
-        {products.map((product) => (
-          <li key={product.id}>
-            {product.name} - ${product.price.toFixed(2)}
-          </li>
-        ))}
-      </ul>
-    </div>
+    product.name.toLowerCase().includes(query.toLowerCase()) ||
+    product.category.toLowerCase().includes(query.toLowerCase())
   );
 }
 
-function afterNextPaint() {
-  return new Promise<void>((resolve) => {
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        resolve();
-      });
-    });
-  });
+function expensiveSort(a: Product, b: Product) {
+  // Artificial CPU work during sort
+  let aScore = 0;
+  let bScore = 0;
+
+  for (let i = 0; i < 1000; i++) {
+    aScore += Math.sqrt(a.price + i);
+    bScore += Math.sqrt(b.price + i);
+  }
+
+  return bScore - aScore;
+}
+
+function HugeTable({ rows }: { rows: Product[] }) {
+  console.log("HugeTable rendered:", rows.length);
+
+  return (
+    <table border={1} cellPadding={8} style={{ width: "100%" }}>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Category</th>
+          <th>Price</th>
+          <th>Rating</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {rows.map((product) => (
+          <tr key={product.id}>
+            <td>{product.id}</td>
+            <td>{product.name}</td>
+            <td>{product.category}</td>
+            <td>${product.price}</td>
+            <td>{product.rating}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+export default function ProductPage() {
+  const [query, setQuery] = useState("");
+  // const deferredQuery = useDeferredValue(value);
+  const [debouncedQuery, setDebouncedQuery] = useState("");
+
+  useEffect(() => {
+    const id = setTimeout(() => {
+      setDebouncedQuery(query);
+    }, 300);
+
+    return () => clearTimeout(id);
+  }, [query]);
+
+  console.log("App rendered");
+
+  const filtered = useMemo(() => {
+    return hugeDataset
+      .filter((item) => expensiveFilter(item, debouncedQuery))
+      .sort(expensiveSort);
+  }, [debouncedQuery]);
+
+  return (
+    <main style={{ padding: 24, fontFamily: "sans-serif" }}>
+      <h1>Search Dashboard</h1>
+
+      <input
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Search products..."
+        style={{
+          width: "100%",
+          padding: 12,
+          fontSize: 18,
+          marginBottom: 16,
+        }}
+      />
+
+      <p>
+        Showing <strong>{filtered.length}</strong> results
+      </p>
+
+      <VirtualizedTable rows={filtered} />
+    </main>
+  );
+}
+
+function VirtualizedTable({ rows }: { rows: Product[] }) {
+  const rowHeight = 42;
+  const containerHeight = 500;
+  const [scrollTop, setScrollTop] = React.useState(0);
+
+  const startIndex = Math.floor(scrollTop / rowHeight);
+  const visibleCount = Math.ceil(containerHeight / rowHeight) + 5;
+  const endIndex = Math.min(startIndex + visibleCount, rows.length);
+
+  const visibleRows = rows.slice(startIndex, endIndex);
+
+  return (
+    <div
+      style={{ height: containerHeight, overflow: "auto" }}
+      onScroll={(e) => setScrollTop(e.currentTarget.scrollTop)}
+    >
+      <div style={{ height: rows.length * rowHeight, position: "relative" }}>
+        <table
+          style={{
+            position: "absolute",
+            top: startIndex * rowHeight,
+            width: "100%",
+          }}
+        >
+          <tbody>
+            {visibleRows.map((product) => (
+              <tr key={product.id} style={{ height: rowHeight }}>
+                <td>{product.id}</td>
+                <td>{product.name}</td>
+                <td>{product.category}</td>
+                <td>${product.price}</td>
+                <td>{product.rating}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
 }
