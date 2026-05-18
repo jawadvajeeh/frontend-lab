@@ -157,7 +157,7 @@
 }
 
 @theme {
-    --color-*: initial;
+    /*--color-*: initial;*/
     /*--font-*: initial;*/
     /*--text-*: initial;*/
     /*--spacing-*: initial;*/

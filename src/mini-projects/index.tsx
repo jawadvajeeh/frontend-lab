@@ -45,6 +45,26 @@ function MiniProjectsDashboard() {
               Form Wizard
             </NavLink>
           </li>
+          <li>
+            <NavLink
+              to="modal-dialog"
+              className={({ isActive }) =>
+                ` ${isActive && "font-bold underline"}`
+              }
+            >
+              Modal Dialog
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="ux-lag"
+              className={({ isActive }) =>
+                ` ${isActive && "font-bold underline"}`
+              }
+            >
+              UX Lag
+            </NavLink>
+          </li>
         </ul>
       </div>
       <Outlet />

@@ -8,6 +8,8 @@ import MiniProjectsDashboard from "./mini-projects/index.tsx";
 import { AppShell } from "./components/layout/app-shell.tsx";
 import { TaskManager } from "./mini-projects/task-manager";
 import { MSFWApp } from "./mini-projects/multi-step-form/index.tsx";
+import { ModalDialogPlayground } from "./mini-projects/modal-dialog/index.tsx";
+import ProductPage from "./mini-projects/ux-lag/index.tsx";
 // import DashboardPage from "./playground/lazy-load-exercise/dashboard.tsx";
 
 const Dashbord = lazy(
@@ -23,6 +25,8 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/mini-projects" element={<MiniProjectsDashboard />}>
             <Route path="task-manager" element={<TaskManager />} />
             <Route path="multi-step-form" element={<MSFWApp />} />
+            <Route path="modal-dialog" element={<ModalDialogPlayground />} />
+            <Route path="ux-lag" element={<ProductPage />} />
           </Route>
         </Route>
         <Route
